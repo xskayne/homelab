@@ -1,5 +1,5 @@
 name: homelab
-services:
+include:
   - path: "services/bazarr/compose.yaml"
   - path: "services/dozzle/compose.yaml"
   - path: "services/flaresolverr/compose.yaml"

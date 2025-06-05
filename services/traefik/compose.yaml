@@ -1,0 +1,45 @@
+name: traefik
+services:
+  traefik:
+    image: traefik:v3.4
+    container_name: traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${INSTALL_DIRECTORY}/config/traefik/traefik.yml:/traefik.yml:ro
+      - ${INSTALL_DIRECTORY}/config/traefik/acme.json:/acme.json
+    environment:
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+      - TZ=${TZ}
+    env_file:
+      - .env
+    ports:
+      - '0.0.0.0:80:80'
+      - '0.0.0.0:443:443'
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.local.shanewilson.co.u\
+        k`)"
+      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=\
+        https"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forw\
+        arded-Proto=https"
+      - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`traefik.local.shanewils\
+        on.co.uk`)"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].main=local.shanewil\
+        son.co.uk"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.local.shanew\
+        ilson.co.uk"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
+
+networks:
+  proxy:
+    external: true

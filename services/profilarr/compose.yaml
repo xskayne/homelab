@@ -1,0 +1,19 @@
+name: profilarr
+services:
+  profilarr:
+    image: santiagosayshey/profilarr:v1.0.1
+    container_name: profilarr
+    volumes:
+      - ${INSTALL_DIRECTORY}/config/profilarr:/config
+    environment:
+      - TZ=${TZ}
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.profilarr.rule=Host(`profilarr.local.shanewilson.\
+        co.uk`)"
+      - "traefik.http.routers.profilarr.entrypoints=https"
+      - "traefik.http.routers.profilarr.tls=true"
+      - "traefik.http.services.profilarr.loadbalancer.server.port=6868"

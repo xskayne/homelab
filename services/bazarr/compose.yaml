@@ -1,0 +1,21 @@
+name: bazarr
+services:
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:amd64-latest
+    container_name: bazarr
+    volumes:
+      - ${MEDIA_DIRECTORY}:/data
+      - ${INSTALL_DIRECTORY}/config/bazarr:/config
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bazarr.rule=Host(`bazarr.local.shanewilson.co.uk`)"
+      - "traefik.http.routers.bazarr.entrypoints=https"
+      - "traefik.http.routers.bazarr.tls=true"
+      - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
+      

@@ -1,0 +1,20 @@
+name: sonarr
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:amd64-latest
+    container_name: sonarr
+    volumes:
+      - ${MEDIA_DIRECTORY}:/data
+      - ${INSTALL_DIRECTORY}/config/sonarr:/config
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.local.shanewilson.co.uk`)"
+      - "traefik.http.routers.sonarr.entrypoints=https"
+      - "traefik.http.routers.sonarr.tls=true"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"

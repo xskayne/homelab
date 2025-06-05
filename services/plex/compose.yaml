@@ -1,0 +1,14 @@
+name: plex
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:amd64-latest
+    container_name: plex
+    volumes:
+      - ${MEDIA_DIRECTORY}:/data
+      - ${INSTALL_DIRECTORY}/config/plex:/config
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - VERSION=docker
+    network_mode: host
+    restart: unless-stopped

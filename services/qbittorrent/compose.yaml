@@ -1,0 +1,15 @@
+name: qbittorrent
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:amd64-latest
+    container_name: qbittorrent
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${MEDIA_DIRECTORY}:/data
+      - ${INSTALL_DIRECTORY}/config/qbittorrent:/config
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - WEBUI_PORT=8081
+    network_mode: "service:gluetun"
+    restart: unless-stopped

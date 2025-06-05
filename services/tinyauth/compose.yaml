@@ -1,0 +1,23 @@
+name: tinyauth
+services:
+  tinyauth:
+    image: ghcr.io/steveiliop56/tinyauth:v3
+    container_name: tinyauth
+    environment:
+      - SECRET=${SECRET}
+      - APP_URL=${APP_URL}
+      - DISABLE_CONTINUE=true
+      - OAUTH_WHITELIST=${OAUTH_WHITELIST}
+      - APP_TITLE=${APP_TITLE}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tinyauth.rule=Host(`auth.local.shanewilson.co.uk`)"
+      - "traefik.http.routers.tinyauth.entrypoints=https"
+      - "traefik.http.routers.tinyauth.tls=true"
+      - "traefik.http.middlewares.tinyauth.forwardauth.address=http://tinyauth:\
+        3000/api/auth/traefik"

@@ -1,0 +1,14 @@
+name: prowlarr
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:amd64-latest
+    container_name: prowlarr
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${INSTALL_DIRECTORY}/config/prowlarr:/config
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - WEBUI_PORT=9696
+    network_mode: "service:gluetun"
+    restart: unless-stopped

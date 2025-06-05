@@ -1,0 +1,9 @@
+config/*
+!config/traefik
+config/traefik/*
+!config/traefik/traefik.yml
+
+
+
+*.env
+!*.env.example

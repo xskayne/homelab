@@ -1,0 +1,20 @@
+name: jellyseerr
+services:
+  jellyseerr:
+    image: fallenbagel/jellyseerr:2.5.2
+    container_name: jellyseerr
+    volumes:
+      - ${INSTALL_DIRECTORY}/config/jellyseerr:/app/config
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${TZ}
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyseerr.rule=Host(`jellyseerr.local.shanewilso\
+        n.co.uk`)"
+      - "traefik.http.routers.jellyseerr.entrypoints=https"
+      - "traefik.http.routers.jellyseerr.tls=true"
+      - "traefik.http.services.jellyseerr.loadbalancer.server.port=5055"

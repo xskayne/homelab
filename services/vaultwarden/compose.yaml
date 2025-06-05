@@ -1,0 +1,28 @@
+name: vaultwarden
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest-alpine
+    container_name: vaultwarden
+    volumes:
+      - ${INSTALL_DIRECTORY}/config/vaultwarden:/data/
+    environment:
+      - DOMAIN=https://vault.local.shanewilson.co.uk
+      - LOGIN_RATELIMIT_MAX_BURST=10
+      - LOGIN_RATELIMIT_SECONDS=60
+      - ADMIN_RATELIMIT_MAX_BURST=10
+      - ADMIN_RATELIMIT_SECONDS=60
+      - ADMIN_TOKEN=${TOKEN}
+      - SENDS_ALLOWED=false
+      - EMERGENCY_ACCESS_ALLOWED=false
+      - WEB_VAULT_ENABLED=true
+      - SIGNUPS_ALLOWED=false # set to true for initial setup
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vaultwarden.rule=Host(`vault.local.shanewilson.co\
+        .uk`)"
+      - "traefik.http.routers.vaultwarden.entrypoints=https"
+      - "traefik.http.routers.vaultwarden.tls=true"
+      - "traefik.http.services.vaultwarden.loadbalancer.server.port=80"

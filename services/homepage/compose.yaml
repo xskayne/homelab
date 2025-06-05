@@ -1,0 +1,21 @@
+name: homepage
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:v1.3.2
+    container_name: homepage
+    volumes:
+      - ${INSTALL_DIRECTORY}/config/homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: home.local.shanewilson.co.uk
+      PUID: ${PUID}
+      PGID: ${PGID}
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.rule=Host(`home.local.shanewilson.co.uk`)"
+      - "traefik.http.routers.homepage.entrypoints=https"
+      - "traefik.http.routers.homepage.tls=true"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
